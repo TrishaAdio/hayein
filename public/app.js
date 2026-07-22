@@ -23,6 +23,10 @@ const els = {
   botName: $('bot-name'),
   botUsername: $('bot-username'),
   backBtn: $('back-btn'),
+  name: $('name'),
+  nameCounter: $('name-counter'),
+  bio: $('bio'),
+  bioCounter: $('bio-counter'),
   description: $('description'),
   counter: $('counter'),
   saveBtn: $('save-btn'),
@@ -31,7 +35,7 @@ const els = {
   toast: $('toast'),
 };
 
-const MAX = 512;
+const LIMITS = { name: 64, bio: 120, description: 512 };
 let username = '';
 let currentBotId = null;
 
@@ -92,10 +96,16 @@ async function api(path, payload) {
   return res.json();
 }
 
+function count(input, counterEl, max, warnAt) {
+  const n = input.value.length;
+  counterEl.textContent = `${n} / ${max}`;
+  counterEl.classList.toggle('warn', n > max - warnAt);
+}
+
 function updateCounter() {
-  const n = els.description.value.length;
-  els.counter.textContent = `${n} / ${MAX}`;
-  els.counter.classList.toggle('warn', n > MAX - 40);
+  count(els.name, els.nameCounter, LIMITS.name, 8);
+  count(els.bio, els.bioCounter, LIMITS.bio, 15);
+  count(els.description, els.counter, LIMITS.description, 40);
 }
 
 const svgChevron =
@@ -178,7 +188,7 @@ async function addBot() {
   }
   els.token.value = '';
   renderBots(data.bots);
-  openEditor(data.bot, data.description);
+  openEditor(data.bot, data.profile);
   toast('Added @' + data.bot.username, 'ok');
 }
 
@@ -188,15 +198,18 @@ async function selectBot(bot) {
     shake(els.botsCard);
     return toast(data.error || 'Could not open bot.', 'err');
   }
-  openEditor(data.bot, data.description);
+  openEditor(data.bot, data.profile);
 }
 
-function openEditor(bot, description) {
+function openEditor(bot, profile) {
   currentBotId = bot.id;
   els.botName.textContent = bot.name;
   els.botUsername.textContent = '@' + bot.username;
   els.botAvatar.textContent = (bot.name || 'B').charAt(0).toUpperCase();
-  els.description.value = description || '';
+  const p = profile || {};
+  els.name.value = p.name || '';
+  els.bio.value = p.bio || '';
+  els.description.value = p.description || '';
   updateCounter();
   show(els.editorCard);
 }
@@ -215,15 +228,25 @@ async function deleteBot(bot, li) {
 }
 
 async function save() {
+  if (!els.name.value.trim()) {
+    shake(els.editorCard);
+    return toast('Name cannot be empty.', 'err');
+  }
   busy(els.saveBtn, true);
-  const data = await api('/api/save', { username, botId: currentBotId, description: els.description.value });
+  const data = await api('/api/save', {
+    username,
+    botId: currentBotId,
+    name: els.name.value,
+    bio: els.bio.value,
+    description: els.description.value,
+  });
   busy(els.saveBtn, false);
   if (!data.ok) {
     shake(els.editorCard);
     return toast(data.error || 'Failed to save.', 'err');
   }
   flashOk(els.editorCard);
-  toast('Description saved.', 'ok');
+  toast('Changes saved.', 'ok');
 }
 
 async function remove() {
@@ -255,6 +278,8 @@ els.addBotBtn.addEventListener('click', addBot);
 els.backBtn.addEventListener('click', backToBots);
 els.saveBtn.addEventListener('click', save);
 els.removeBtn.addEventListener('click', remove);
+els.name.addEventListener('input', updateCounter);
+els.bio.addEventListener('input', updateCounter);
 els.description.addEventListener('input', updateCounter);
 
 els.username.addEventListener('keydown', (e) => e.key === 'Enter' && login());

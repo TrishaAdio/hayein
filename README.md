@@ -6,8 +6,8 @@ A small web app to change the **description** of your Telegram bots (the "What c
 
 - **Username accounts** — enter a username to see the bots you saved before.
 - **Multiple bots** — add bots by token; each is validated via the Telegram API.
-- **Edit description** — live `0 / 512` character counter (Telegram's limit).
-- **Remove button** — clears the description for the `en` locale.
+- **Edit name, bio & description** — three fields with live counters (`64` name, `120` bio, `512` description). Only changed fields are sent to Telegram, so `setMyName` isn't called needlessly.
+- **Clear description** — one-click reset of the description for the `en` locale.
 - **Polished UI** — animated background, view transitions, success/error feedback, reduced-motion support.
 - **Zero dependencies** — pure Node.js (`http` + built-in `fetch`).
 
@@ -36,7 +36,7 @@ Accounts are keyed by username with **no password**, so anyone who enters the sa
 |--------|------|---------|
 | POST | `/api/login` | Create/open a username, list its bots |
 | POST | `/api/add-bot` | Validate a token and save it under the username |
-| POST | `/api/select` | Load a saved bot's identity + current description |
-| POST | `/api/save` | Set the description (`en`) |
+| POST | `/api/select` | Load a saved bot's name, bio & description |
+| POST | `/api/save` | Update name / bio / description (only changed fields, `en`) |
 | POST | `/api/remove` | Clear the description (`en`) |
 | POST | `/api/delete-bot` | Forget a saved bot (does not affect the bot on Telegram) |

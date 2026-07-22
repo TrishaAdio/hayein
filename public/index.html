@@ -90,11 +90,24 @@
         <button id="back-btn" class="ghost-btn" type="button" title="Back to your bots">Back</button>
       </div>
 
-      <label class="field-label" for="description">Description</label>
+      <label class="field-label" for="name">Name</label>
+      <input id="name" type="text" maxlength="64" placeholder="Bot display name" />
+      <div class="counter-row"><span id="name-counter" class="counter">0 / 64</span></div>
+
+      <label class="field-label" for="bio">Bio <span class="sub">· about, shown on the profile</span></label>
+      <textarea
+        id="bio"
+        maxlength="120"
+        rows="2"
+        placeholder="Short one-liner shown on the bot's profile page."
+      ></textarea>
+      <div class="counter-row"><span id="bio-counter" class="counter">0 / 120</span></div>
+
+      <label class="field-label" for="description">Description <span class="sub">· shown in an empty chat</span></label>
       <textarea
         id="description"
         maxlength="512"
-        rows="6"
+        rows="5"
         placeholder="Describe what your bot does. Shown when a user opens an empty chat with the bot."
       ></textarea>
       <div class="counter-row">
@@ -103,11 +116,11 @@
 
       <div class="actions">
         <button id="save-btn" class="primary-btn" type="button">
-          <span class="btn-label">Save description</span>
+          <span class="btn-label">Save changes</span>
           <span class="spinner" hidden></span>
         </button>
         <button id="remove-btn" class="danger-btn" type="button">
-          <span class="btn-label">Remove</span>
+          <span class="btn-label">Clear description</span>
           <span class="spinner" hidden></span>
         </button>
       </div>

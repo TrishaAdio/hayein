@@ -20,7 +20,9 @@ const DATA_DIR = path.join(__dirname, 'data');
 const STORE_FILE = path.join(DATA_DIR, 'store.json');
 const LANG_CODE = 'en'; // locked to English as requested
 const TG_API = 'https://api.telegram.org';
-const MAX_DESC = 512;
+const MAX_NAME = 64;  // setMyName limit
+const MAX_BIO = 120;  // setMyShortDescription limit
+const MAX_DESC = 512; // setMyDescription limit
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -91,9 +93,18 @@ async function tg(token, method, params) {
   }
 }
 
-async function fetchDescription(token) {
-  const desc = await tg(token, 'getMyDescription', { language_code: LANG_CODE });
-  return desc.ok ? desc.result.description || '' : '';
+// Fetch the editable profile fields (name, bio/short description, description).
+async function fetchProfile(token) {
+  const [name, bio, desc] = await Promise.all([
+    tg(token, 'getMyName', { language_code: LANG_CODE }),
+    tg(token, 'getMyShortDescription', { language_code: LANG_CODE }),
+    tg(token, 'getMyDescription', { language_code: LANG_CODE }),
+  ]);
+  return {
+    name: name.ok ? name.result.name || '' : '',
+    bio: bio.ok ? bio.result.short_description || '' : '',
+    description: desc.ok ? desc.result.description || '' : '',
+  };
 }
 
 /* --------------------------------- http --------------------------------- */
@@ -156,12 +167,12 @@ async function handleAddBot(body, res) {
   };
   saveStore(store);
 
-  const description = await fetchDescription(token);
+  const profile = await fetchProfile(token);
   return sendJSON(res, 200, {
     ok: true,
     bots: botList(store, username),
     bot: { id: me.result.id, name: me.result.first_name, username: me.result.username },
-    description,
+    profile,
     lang: LANG_CODE,
   });
 }
@@ -174,27 +185,49 @@ async function handleSelect(body, res) {
 
   const me = await tg(token, 'getMe');
   if (!me.ok) return sendJSON(res, 200, { ok: false, error: me.description });
-  const description = await fetchDescription(token);
+  const profile = await fetchProfile(token);
   return sendJSON(res, 200, {
     ok: true,
     bot: { id: me.result.id, name: me.result.first_name, username: me.result.username },
-    description,
+    profile,
     lang: LANG_CODE,
   });
 }
 
+// Save name / bio / description. Only fields that actually changed are sent to
+// Telegram (setMyName is rate-limited, so we avoid redundant calls).
 async function handleSave(body, res) {
   const username = normUser(body.username);
   const token = getToken(loadStore(), username, body.botId);
   if (!token) return sendJSON(res, 200, { ok: false, error: 'Bot not found for this username.' });
 
-  const text = typeof body.description === 'string' ? body.description : '';
-  if (text.length > MAX_DESC) {
-    return sendJSON(res, 200, { ok: false, error: `Description must be ${MAX_DESC} characters or fewer.` });
+  const name = typeof body.name === 'string' ? body.name : '';
+  const bio = typeof body.bio === 'string' ? body.bio : '';
+  const description = typeof body.description === 'string' ? body.description : '';
+
+  if (name.length > MAX_NAME) return sendJSON(res, 200, { ok: false, error: `Name must be ${MAX_NAME} characters or fewer.` });
+  if (bio.length > MAX_BIO) return sendJSON(res, 200, { ok: false, error: `Bio must be ${MAX_BIO} characters or fewer.` });
+  if (description.length > MAX_DESC) return sendJSON(res, 200, { ok: false, error: `Description must be ${MAX_DESC} characters or fewer.` });
+  if (!name.trim()) return sendJSON(res, 200, { ok: false, error: 'Name cannot be empty.' });
+
+  const current = await fetchProfile(token);
+  const errors = [];
+
+  if (name !== current.name) {
+    const r = await tg(token, 'setMyName', { name, language_code: LANG_CODE });
+    if (!r.ok) errors.push(`Name: ${r.description}`);
   }
-  const r = await tg(token, 'setMyDescription', { description: text, language_code: LANG_CODE });
-  if (!r.ok) return sendJSON(res, 200, { ok: false, error: r.description });
-  return sendJSON(res, 200, { ok: true, description: text });
+  if (bio !== current.bio) {
+    const r = await tg(token, 'setMyShortDescription', { short_description: bio, language_code: LANG_CODE });
+    if (!r.ok) errors.push(`Bio: ${r.description}`);
+  }
+  if (description !== current.description) {
+    const r = await tg(token, 'setMyDescription', { description, language_code: LANG_CODE });
+    if (!r.ok) errors.push(`Description: ${r.description}`);
+  }
+
+  if (errors.length) return sendJSON(res, 200, { ok: false, error: errors.join(' · ') });
+  return sendJSON(res, 200, { ok: true, profile: { name, bio, description } });
 }
 
 async function handleRemove(body, res) {
