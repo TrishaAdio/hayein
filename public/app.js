@@ -22,6 +22,7 @@ const els = {
   botAvatar: $('bot-avatar'),
   botName: $('bot-name'),
   botUsername: $('bot-username'),
+  langToggle: $('lang-toggle'),
   backBtn: $('back-btn'),
   name: $('name'),
   nameCounter: $('name-counter'),
@@ -38,6 +39,7 @@ const els = {
 const LIMITS = { name: 64, bio: 120, description: 512 };
 let username = '';
 let currentBotId = null;
+let currentLang = ''; // '' = Default (all users), 'en' = English override
 
 /* --------------------------------- utils --------------------------------- */
 
@@ -202,7 +204,7 @@ async function addBot() {
 }
 
 async function selectBot(bot) {
-  const data = await api('/api/select', { username, botId: bot.id });
+  const data = await api('/api/select', { username, botId: bot.id, lang: '' });
   if (!data.ok) {
     shake(els.botsCard);
     return toast(data.error || 'Could not open bot.', 'err');
@@ -210,17 +212,44 @@ async function selectBot(bot) {
   openEditor(data.bot, data.profile);
 }
 
-function openEditor(bot, profile) {
-  currentBotId = bot.id;
-  els.botName.textContent = bot.name;
-  els.botUsername.textContent = '@' + bot.username;
-  els.botAvatar.textContent = (bot.name || 'B').charAt(0).toUpperCase();
+function setToggleActive(lang) {
+  els.langToggle.querySelectorAll('.lang-opt').forEach((b) =>
+    b.classList.toggle('active', b.dataset.lang === lang)
+  );
+}
+
+function fillFields(profile) {
   const p = profile || {};
   els.name.value = p.name || '';
   els.bio.value = p.bio || '';
   els.description.value = p.description || '';
   updateCounter();
+}
+
+function openEditor(bot, profile) {
+  currentBotId = bot.id;
+  currentLang = ''; // always open on Default
+  setToggleActive('');
+  els.botName.textContent = bot.name;
+  els.botUsername.textContent = '@' + bot.username;
+  els.botAvatar.textContent = (bot.name || 'B').charAt(0).toUpperCase();
+  fillFields(profile);
   show(els.editorCard);
+}
+
+// Switch locale: reloads the fields with that locale's stored values.
+async function setLang(lang) {
+  lang = lang === 'en' ? 'en' : '';
+  if (lang === currentLang) return;
+  currentLang = lang;
+  setToggleActive(lang);
+  const data = await api('/api/select', { username, botId: currentBotId, lang });
+  if (!data.ok) {
+    shake(els.editorCard);
+    return toast(data.error || 'Could not load that locale.', 'err');
+  }
+  fillFields(data.profile);
+  toast(lang === 'en' ? 'Showing English (en)' : 'Showing Default', 'ok');
 }
 
 function backToBots() {
@@ -245,6 +274,7 @@ async function save() {
   const data = await api('/api/save', {
     username,
     botId: currentBotId,
+    lang: currentLang,
     name: els.name.value,
     bio: els.bio.value,
     description: els.description.value,
@@ -259,9 +289,10 @@ async function save() {
 }
 
 async function remove() {
-  if (!confirm('Remove the bot description? This clears the default description shown to everyone.')) return;
+  const scope = currentLang === 'en' ? 'the English (en) description' : 'the default description shown to everyone';
+  if (!confirm('Remove ' + scope + '?')) return;
   busy(els.removeBtn, true);
-  const data = await api('/api/remove', { username, botId: currentBotId });
+  const data = await api('/api/remove', { username, botId: currentBotId, lang: currentLang });
   busy(els.removeBtn, false);
   if (!data.ok) {
     shake(els.editorCard);
@@ -287,6 +318,9 @@ els.addBotBtn.addEventListener('click', addBot);
 els.backBtn.addEventListener('click', backToBots);
 els.saveBtn.addEventListener('click', save);
 els.removeBtn.addEventListener('click', remove);
+els.langToggle.querySelectorAll('.lang-opt').forEach((btn) =>
+  btn.addEventListener('click', () => setLang(btn.dataset.lang))
+);
 els.name.addEventListener('input', updateCounter);
 els.bio.addEventListener('input', updateCounter);
 els.description.addEventListener('input', updateCounter);

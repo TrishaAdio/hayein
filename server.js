@@ -52,6 +52,11 @@ function normUser(u) {
   return String(u || '').trim().replace(/^@/, '').toLowerCase();
 }
 
+// Only two choices are exposed: '' (default / normal, all users) or 'en'.
+function normLang(l) {
+  return l === 'en' ? 'en' : '';
+}
+
 // Public view of a user's bots (never leaks tokens to the client).
 function botList(store, username) {
   const acct = store[username];
@@ -93,12 +98,14 @@ async function tg(token, method, params) {
   }
 }
 
-// Fetch the editable profile fields (name, bio/short description, description).
-async function fetchProfile(token) {
+// Fetch the editable profile fields (name, bio/short description, description)
+// for a given locale. Empty language_code = the default values seen by all.
+async function fetchProfile(token, lang) {
+  const language_code = normLang(lang);
   const [name, bio, desc] = await Promise.all([
-    tg(token, 'getMyName', { language_code: LANG_CODE }),
-    tg(token, 'getMyShortDescription', { language_code: LANG_CODE }),
-    tg(token, 'getMyDescription', { language_code: LANG_CODE }),
+    tg(token, 'getMyName', { language_code }),
+    tg(token, 'getMyShortDescription', { language_code }),
+    tg(token, 'getMyDescription', { language_code }),
   ]);
   return {
     name: name.ok ? name.result.name || '' : '',
@@ -167,13 +174,14 @@ async function handleAddBot(body, res) {
   };
   saveStore(store);
 
-  const profile = await fetchProfile(token);
+  const lang = normLang(body.lang);
+  const profile = await fetchProfile(token, lang);
   return sendJSON(res, 200, {
     ok: true,
     bots: botList(store, username),
     bot: { id: me.result.id, name: me.result.first_name, username: me.result.username },
     profile,
-    lang: LANG_CODE,
+    lang,
   });
 }
 
@@ -185,12 +193,13 @@ async function handleSelect(body, res) {
 
   const me = await tg(token, 'getMe');
   if (!me.ok) return sendJSON(res, 200, { ok: false, error: me.description });
-  const profile = await fetchProfile(token);
+  const lang = normLang(body.lang);
+  const profile = await fetchProfile(token, lang);
   return sendJSON(res, 200, {
     ok: true,
     bot: { id: me.result.id, name: me.result.first_name, username: me.result.username },
     profile,
-    lang: LANG_CODE,
+    lang,
   });
 }
 
@@ -210,19 +219,20 @@ async function handleSave(body, res) {
   if (description.length > MAX_DESC) return sendJSON(res, 200, { ok: false, error: `Description must be ${MAX_DESC} characters or fewer.` });
   if (!name.trim()) return sendJSON(res, 200, { ok: false, error: 'Name cannot be empty.' });
 
-  const current = await fetchProfile(token);
+  const lang = normLang(body.lang);
+  const current = await fetchProfile(token, lang);
   const errors = [];
 
   if (name !== current.name) {
-    const r = await tg(token, 'setMyName', { name, language_code: LANG_CODE });
+    const r = await tg(token, 'setMyName', { name, language_code: lang });
     if (!r.ok) errors.push(`Name: ${r.description}`);
   }
   if (bio !== current.bio) {
-    const r = await tg(token, 'setMyShortDescription', { short_description: bio, language_code: LANG_CODE });
+    const r = await tg(token, 'setMyShortDescription', { short_description: bio, language_code: lang });
     if (!r.ok) errors.push(`Bio: ${r.description}`);
   }
   if (description !== current.description) {
-    const r = await tg(token, 'setMyDescription', { description, language_code: LANG_CODE });
+    const r = await tg(token, 'setMyDescription', { description, language_code: lang });
     if (!r.ok) errors.push(`Description: ${r.description}`);
   }
 
@@ -235,7 +245,7 @@ async function handleRemove(body, res) {
   const token = getToken(loadStore(), username, body.botId);
   if (!token) return sendJSON(res, 200, { ok: false, error: 'Bot not found for this username.' });
 
-  const r = await tg(token, 'setMyDescription', { description: '', language_code: LANG_CODE });
+  const r = await tg(token, 'setMyDescription', { description: '', language_code: normLang(body.lang) });
   if (!r.ok) return sendJSON(res, 200, { ok: false, error: r.description });
   return sendJSON(res, 200, { ok: true, description: '' });
 }

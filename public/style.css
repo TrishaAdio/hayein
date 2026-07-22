@@ -201,15 +201,33 @@ textarea { min-height: 120px; line-height: 1.5; }
 .bot-meta { display: flex; flex-direction: column; margin-right: auto; min-width: 0; }
 .bot-name { font-weight: 600; font-size: 15px; }
 .bot-username { font-size: 12.5px; color: var(--muted); }
-.lang-badge {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: var(--accent);
-  background: rgba(42, 171, 238, 0.14);
-  border: 1px solid rgba(42, 171, 238, 0.35);
-  padding: 4px 8px;
+/* Segmented Default / EN switch */
+.lang-toggle {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--line);
   border-radius: 999px;
+}
+.lang-opt {
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  padding: 5px 11px;
+  cursor: pointer;
+  transition: color 0.2s var(--ease-out), background 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+.lang-opt:hover { color: var(--text); }
+.lang-opt.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 3px 10px rgba(42, 171, 238, 0.35);
 }
 
 /* Counter + actions */
@@ -383,13 +401,6 @@ textarea { min-height: 120px; line-height: 1.5; }
   0%   { transform: scale(0.4); opacity: 0; }
   70%  { transform: scale(1.1); }
   100% { transform: scale(1); opacity: 1; }
-}
-
-/* Lang badge subtle pulse */
-.lang-badge { animation: badgePulse 2.6s ease-in-out infinite; }
-@keyframes badgePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(42, 171, 238, 0); }
-  50%      { box-shadow: 0 0 0 4px rgba(42, 171, 238, 0.12); }
 }
 
 /* Counter bump when typing near limit */

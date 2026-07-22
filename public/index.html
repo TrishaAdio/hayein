@@ -86,7 +86,10 @@
           <span id="bot-name" class="bot-name">Bot</span>
           <span id="bot-username" class="bot-username">@bot</span>
         </div>
-        <span class="lang-badge" title="Applies to all users (default locale)">Default</span>
+        <div class="lang-toggle" id="lang-toggle" role="group" aria-label="Locale">
+          <button class="lang-opt active" type="button" data-lang="" title="Default — shown to all users">Default</button>
+          <button class="lang-opt" type="button" data-lang="en" title="English-only override">EN</button>
+        </div>
         <button id="back-btn" class="ghost-btn" type="button" title="Back to your bots">Back</button>
       </div>
 
@@ -126,7 +129,7 @@
       </div>
     </section>
 
-    <footer class="foot">Applies to <strong>all languages</strong> (default) · Runs on port 4000</footer>
+    <footer class="foot">Switch <strong>Default</strong> / <strong>EN</strong> per bot · Runs on port 4000</footer>
   </main>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
