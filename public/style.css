@@ -1,0 +1,486 @@
+:root {
+  --bg: #0e1621;
+  --bg-2: #17212b;
+  --card: #1c2733;
+  --card-2: #223140;
+  --line: #2b3947;
+  --text: #e9eef3;
+  --muted: #8595a6;
+  --accent: #2aabee;
+  --accent-2: #229ed9;
+  --danger: #e5484d;
+  --danger-2: #c93c40;
+  --ok: #2fbf71;
+  --radius: 16px;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(42, 171, 238, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(34, 158, 217, 0.12), transparent 50%),
+    var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 18px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  width: 100%;
+  max-width: 480px;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 8px 20px rgba(42, 171, 238, 0.35);
+  flex-shrink: 0;
+}
+.brand h1 {
+  font-size: 20px;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+.brand p {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Card */
+.card {
+  background: linear-gradient(180deg, var(--card), var(--bg-2));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.card + .card { margin-top: 16px; }
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+/* Inputs */
+.token-row {
+  display: flex;
+  gap: 8px;
+}
+input[type="password"],
+input[type="text"],
+textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  font: inherit;
+  padding: 13px 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  resize: vertical;
+}
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(42, 171, 238, 0.18);
+}
+textarea { min-height: 120px; line-height: 1.5; }
+
+.hint {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 10px 0 16px;
+  line-height: 1.5;
+}
+.hint strong { color: #b9c6d3; }
+
+/* Buttons */
+.primary-btn,
+.danger-btn,
+.ghost-btn {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: transform 0.06s, filter 0.15s, background 0.15s, border-color 0.15s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.primary-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  padding: 13px 18px;
+}
+.danger-btn {
+  background: transparent;
+  color: var(--danger);
+  border-color: rgba(229, 72, 77, 0.5);
+  padding: 13px 18px;
+}
+.danger-btn:hover { background: rgba(229, 72, 77, 0.12); }
+.primary-btn:hover { filter: brightness(1.06); }
+.primary-btn:active,
+.danger-btn:active { transform: translateY(1px); }
+.full { width: 100%; }
+
+.primary-btn:disabled,
+.danger-btn:disabled { opacity: 0.55; cursor: not-allowed; filter: none; }
+
+.ghost-btn {
+  background: var(--card-2);
+  border-color: var(--line);
+  color: var(--muted);
+  padding: 0 12px;
+  min-width: 46px;
+}
+.ghost-btn:hover { color: var(--text); border-color: var(--accent); }
+
+/* Bot bar */
+.bot-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #6a5acd, #2aabee);
+  flex-shrink: 0;
+}
+.bot-meta { display: flex; flex-direction: column; margin-right: auto; min-width: 0; }
+.bot-name { font-weight: 600; font-size: 15px; }
+.bot-username { font-size: 12.5px; color: var(--muted); }
+.lang-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  background: rgba(42, 171, 238, 0.14);
+  border: 1px solid rgba(42, 171, 238, 0.35);
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+/* Counter + actions */
+.counter-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+.counter { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.counter.warn { color: #e5a04d; }
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+.actions .primary-btn { flex: 1; }
+
+.foot {
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 18px;
+}
+.foot strong { color: #b9c6d3; }
+
+/* Spinner */
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.danger-btn .spinner { border-color: rgba(229, 72, 77, 0.35); border-top-color: var(--danger); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translate(-50%, 20px);
+  background: #223140;
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  max-width: 90vw;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.ok { border-color: rgba(47, 191, 113, 0.6); }
+.toast.err { border-color: rgba(229, 72, 77, 0.6); }
+
+
+/* ============================ ANIMATIONS ============================ */
+
+/* Animated ambient background orbs */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  filter: blur(70px);
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.5;
+  will-change: transform;
+}
+.orb-1 {
+  width: 460px; height: 460px;
+  background: radial-gradient(circle, rgba(42, 171, 238, 0.55), transparent 70%);
+  top: -140px; left: -120px;
+  animation: drift1 18s ease-in-out infinite;
+}
+.orb-2 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(106, 90, 205, 0.5), transparent 70%);
+  bottom: -120px; right: -100px;
+  animation: drift2 22s ease-in-out infinite;
+}
+.orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(47, 191, 113, 0.35), transparent 70%);
+  top: 40%; left: 55%;
+  animation: drift3 26s ease-in-out infinite;
+}
+@keyframes drift1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(90px, 60px) scale(1.12); }
+}
+@keyframes drift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-70px, -50px) scale(1.15); }
+}
+@keyframes drift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-60px, 40px) scale(0.9); }
+}
+
+/* Entrance: brand + cards rise in, staggered */
+.brand { animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.card  { animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.08s; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Brand mark gentle float + hover pop */
+.brand-mark { animation: floaty 4.5s ease-in-out infinite; }
+.brand-mark:hover { animation-play-state: paused; transform: scale(1.08) rotate(-4deg); transition: transform 0.25s; }
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+/* View switch: editor card animates in when revealed */
+.card.enter { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.card.leave { animation: cardLeave 0.25s ease forwards; }
+@keyframes cardLeave {
+  to { opacity: 0; transform: translateY(-10px) scale(0.98); }
+}
+
+/* Bot bar + fields stagger inside editor */
+.card.enter .bot-bar     { animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.08s; }
+.card.enter .field-label { animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.14s; }
+.card.enter textarea     { animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.20s; }
+.card.enter .actions     { animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.26s; }
+
+/* Buttons: sheen sweep on hover + lift */
+.primary-btn { position: relative; overflow: hidden; }
+.primary-btn::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -120%;
+  width: 60%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-18deg);
+}
+.primary-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(42, 171, 238, 0.35); }
+.primary-btn:hover:not(:disabled)::after { animation: sheen 0.7s ease; }
+@keyframes sheen { to { left: 140%; } }
+
+.danger-btn:hover:not(:disabled) { transform: translateY(-2px); }
+.ghost-btn { transition: transform 0.12s, color 0.15s, border-color 0.15s, background 0.15s; }
+.ghost-btn:hover { transform: translateY(-1px); }
+.ghost-btn:active { transform: scale(0.92); }
+
+/* Avatar pop-in */
+.avatar { transition: transform 0.2s; }
+.card.enter .avatar { animation: pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: 0.12s; }
+@keyframes pop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  70%  { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Lang badge subtle pulse */
+.lang-badge { animation: badgePulse 2.6s ease-in-out infinite; }
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(42, 171, 238, 0); }
+  50%      { box-shadow: 0 0 0 4px rgba(42, 171, 238, 0.12); }
+}
+
+/* Counter bump when typing near limit */
+.counter.warn { animation: bump 0.25s ease; }
+@keyframes bump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+
+/* Success flash on a card (added briefly by JS) */
+.card.flash-ok { animation: flashOk 0.7s ease; }
+@keyframes flashOk {
+  0%   { box-shadow: var(--shadow), 0 0 0 0 rgba(47, 191, 113, 0); }
+  30%  { box-shadow: var(--shadow), 0 0 0 3px rgba(47, 191, 113, 0.55); }
+  100% { box-shadow: var(--shadow), 0 0 0 0 rgba(47, 191, 113, 0); }
+}
+
+/* Error shake (added briefly by JS) */
+.shake { animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97); }
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-5px); }
+  40%, 60% { transform: translateX(5px); }
+}
+
+/* Toast: slight overshoot bounce */
+.toast.show { animation: toastIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 24px) scale(0.96); }
+  to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+/* Inline success checkmark that morphs from the spinner slot */
+.check {
+  width: 16px; height: 16px;
+  display: inline-block;
+}
+.check path {
+  stroke: currentColor;
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 22;
+  stroke-dashoffset: 22;
+  animation: draw 0.35s ease forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .orb { display: none; }
+}
+
+
+/* ============================ BOT LIST ============================ */
+.bot-list {
+  list-style: none;
+  margin: 0 0 4px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bot-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: transform 0.1s, border-color 0.15s, background 0.15s;
+  animation: rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.bot-item:hover {
+  border-color: var(--accent);
+  background: var(--card-2);
+  transform: translateY(-1px);
+}
+.bot-item .avatar { width: 36px; height: 36px; font-size: 14px; }
+.bot-item .bot-meta { margin-right: auto; }
+.bot-item .bot-name { font-size: 14px; }
+.bot-item .bot-username { font-size: 12px; }
+.bot-item .open-chevron { color: var(--muted); transition: transform 0.15s, color 0.15s; }
+.bot-item:hover .open-chevron { color: var(--accent); transform: translateX(3px); }
+
+.bot-del {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s, transform 0.1s;
+}
+.bot-del:hover { color: var(--danger); background: rgba(229, 72, 77, 0.12); }
+.bot-del:active { transform: scale(0.88); }
+
+.bot-item.removing { animation: itemOut 0.25s ease forwards; }
+@keyframes itemOut {
+  to { opacity: 0; transform: translateX(24px); height: 0; padding-top: 0; padding-bottom: 0; margin: 0; }
+}

@@ -1,0 +1,12 @@
+# Runtime data — contains bot tokens, must never be committed
+data/
+*.log
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

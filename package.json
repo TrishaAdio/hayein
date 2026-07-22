@@ -1,0 +1,13 @@
+{
+  "name": "tg-desc-web",
+  "version": "1.0.0",
+  "description": "Web UI to change a Telegram bot's description (language en). Zero dependencies.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telegram Bot Description Changer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>" />
+</head>
+<body>
+  <div class="bg" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
+  <main class="shell">
+    <header class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+          <path fill="currentColor" d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71l-4.15-3.06-2 1.94c-.23.23-.42.42-.86.41z"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Bot Description Changer</h1>
+        <p>Update the “What can this bot do?” text on your Telegram bot.</p>
+      </div>
+    </header>
+
+    <!-- STEP 1: username -->
+    <section id="login-card" class="card">
+      <label class="field-label" for="username">Your username</label>
+      <input
+        id="username"
+        type="text"
+        autocomplete="username"
+        spellcheck="false"
+        placeholder="e.g. trisha"
+      />
+      <p class="hint">Enter the same username each time to see the bots you saved before.</p>
+      <button id="login-btn" class="primary-btn full" type="button">
+        <span class="btn-label">Continue</span>
+        <span class="spinner" hidden></span>
+      </button>
+    </section>
+
+    <!-- STEP 2: your bots -->
+    <section id="bots-card" class="card" hidden>
+      <div class="bot-bar">
+        <div class="avatar" id="user-avatar">U</div>
+        <div class="bot-meta">
+          <span class="bot-name" id="user-label">@user</span>
+          <span class="bot-username">Your bots</span>
+        </div>
+        <button id="switch-user-btn" class="ghost-btn" type="button" title="Switch username">Switch</button>
+      </div>
+
+      <ul id="bot-list" class="bot-list"></ul>
+      <p id="empty-bots" class="hint" hidden>No bots saved yet. Add one with its token below.</p>
+
+      <label class="field-label" for="token" style="margin-top:6px">Add a bot</label>
+      <div class="token-row">
+        <input
+          id="token"
+          type="password"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="123456789:AA…  (from @BotFather)"
+        />
+        <button id="toggle-token" class="ghost-btn" type="button" title="Show / hide">👁</button>
+      </div>
+      <button id="add-bot-btn" class="primary-btn full" type="button" style="margin-top:12px">
+        <span class="btn-label">Add bot</span>
+        <span class="spinner" hidden></span>
+      </button>
+    </section>
+
+    <!-- STEP 3: editor -->
+    <section id="editor-card" class="card" hidden>
+      <div class="bot-bar">
+        <div id="bot-avatar" class="avatar">B</div>
+        <div class="bot-meta">
+          <span id="bot-name" class="bot-name">Bot</span>
+          <span id="bot-username" class="bot-username">@bot</span>
+        </div>
+        <span class="lang-badge">EN</span>
+        <button id="back-btn" class="ghost-btn" type="button" title="Back to your bots">Back</button>
+      </div>
+
+      <label class="field-label" for="description">Description</label>
+      <textarea
+        id="description"
+        maxlength="512"
+        rows="6"
+        placeholder="Describe what your bot does. Shown when a user opens an empty chat with the bot."
+      ></textarea>
+      <div class="counter-row">
+        <span id="counter" class="counter">0 / 512</span>
+      </div>
+
+      <div class="actions">
+        <button id="save-btn" class="primary-btn" type="button">
+          <span class="btn-label">Save description</span>
+          <span class="spinner" hidden></span>
+        </button>
+        <button id="remove-btn" class="danger-btn" type="button">
+          <span class="btn-label">Remove</span>
+          <span class="spinner" hidden></span>
+        </button>
+      </div>
+    </section>
+
+    <footer class="foot">Language locked to <strong>en</strong> · Runs on port 4000</footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
