@@ -321,9 +321,10 @@ textarea { min-height: 120px; line-height: 1.5; }
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
 }
 
-/* Entrance: brand + cards rise in, staggered */
+/* Entrance: brand rises in once. Cards animate ONLY via the .enter class
+   (driven by JS) so they never replay when the class is later removed. */
 .brand { animation: rise 0.75s var(--ease-out) both; }
-.card  { animation: rise 0.75s var(--ease-out) both; animation-delay: 0.1s; will-change: transform, opacity; }
+.card  { will-change: transform, opacity; }
 @keyframes rise {
   from { opacity: 0; transform: translateY(16px) scale(0.985); }
   to   { opacity: 1; transform: translateY(0) scale(1); }

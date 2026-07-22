@@ -295,3 +295,8 @@ els.username.addEventListener('keydown', (e) => e.key === 'Enter' && login());
 els.token.addEventListener('keydown', (e) => e.key === 'Enter' && addBot());
 
 updateCounter();
+
+// One-time entrance for the first visible card (login). Removing .enter
+// afterwards leaves no base animation, so nothing replays.
+els.loginCard.classList.add('enter');
+setTimeout(() => els.loginCard.classList.remove('enter'), 640);
