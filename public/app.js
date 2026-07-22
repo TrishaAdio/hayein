@@ -259,7 +259,7 @@ async function save() {
 }
 
 async function remove() {
-  if (!confirm('Remove the bot description? This clears it for the en language.')) return;
+  if (!confirm('Remove the bot description? This clears the default description shown to everyone.')) return;
   busy(els.removeBtn, true);
   const data = await api('/api/remove', { username, botId: currentBotId });
   busy(els.removeBtn, false);
