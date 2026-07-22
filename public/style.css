@@ -20,6 +20,7 @@
 html, body {
   margin: 0;
   min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -114,7 +115,7 @@ textarea {
   color: var(--text);
   font: inherit;
   padding: 13px 14px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out), background 0.22s var(--ease-out);
   resize: vertical;
 }
 input:focus,
@@ -142,7 +143,7 @@ textarea { min-height: 120px; line-height: 1.5; }
   cursor: pointer;
   border-radius: 12px;
   border: 1px solid transparent;
-  transition: transform 0.06s, filter 0.15s, background 0.15s, border-color 0.15s;
+  transition: transform 0.16s var(--ease-out), box-shadow 0.22s var(--ease-out), filter 0.2s, background 0.2s, border-color 0.2s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -213,7 +214,7 @@ textarea { min-height: 120px; line-height: 1.5; }
 
 /* Counter + actions */
 .counter-row { display: flex; justify-content: flex-end; margin-top: 8px; }
-.counter { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.counter { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; transition: color 0.25s var(--ease-out); }
 .counter.warn { color: #e5a04d; }
 
 .actions {
@@ -314,11 +315,17 @@ textarea { min-height: 120px; line-height: 1.5; }
   50%      { transform: translate(-60px, 40px) scale(0.9); }
 }
 
+/* Smooth easing tokens */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);   /* soft, expo-like landing */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+}
+
 /* Entrance: brand + cards rise in, staggered */
-.brand { animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
-.card  { animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.08s; }
+.brand { animation: rise 0.75s var(--ease-out) both; }
+.card  { animation: rise 0.75s var(--ease-out) both; animation-delay: 0.1s; will-change: transform, opacity; }
 @keyframes rise {
-  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  from { opacity: 0; transform: translateY(16px) scale(0.985); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -331,21 +338,23 @@ textarea { min-height: 120px; line-height: 1.5; }
 }
 
 /* View switch: editor card animates in when revealed */
-.card.enter { animation: cardEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.card.enter { animation: cardEnter 0.6s var(--ease-out) both; }
 @keyframes cardEnter {
-  from { opacity: 0; transform: translateY(14px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(18px) scale(0.985); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
-.card.leave { animation: cardLeave 0.25s ease forwards; }
+.card.leave { animation: cardLeave 0.2s var(--ease-in) forwards; }
 @keyframes cardLeave {
-  to { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to { opacity: 0; transform: translateY(-8px) scale(0.99); filter: blur(3px); }
 }
 
 /* Bot bar + fields stagger inside editor */
-.card.enter .bot-bar     { animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.08s; }
-.card.enter .field-label { animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.14s; }
-.card.enter textarea     { animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.20s; }
-.card.enter .actions     { animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both; animation-delay: 0.26s; }
+.card.enter .bot-bar      { animation: rise 0.55s var(--ease-out) both; animation-delay: 0.10s; }
+.card.enter .field-label  { animation: rise 0.55s var(--ease-out) both; animation-delay: 0.16s; }
+.card.enter input,
+.card.enter textarea      { animation: rise 0.55s var(--ease-out) both; animation-delay: 0.22s; }
+.card.enter .counter-row  { animation: rise 0.55s var(--ease-out) both; animation-delay: 0.24s; }
+.card.enter .actions      { animation: rise 0.55s var(--ease-out) both; animation-delay: 0.30s; }
 
 /* Buttons: sheen sweep on hover + lift */
 .primary-btn { position: relative; overflow: hidden; }
@@ -460,8 +469,8 @@ textarea { min-height: 120px; line-height: 1.5; }
   border-radius: 12px;
   background: var(--bg);
   cursor: pointer;
-  transition: transform 0.1s, border-color 0.15s, background 0.15s;
-  animation: rise 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: transform 0.18s var(--ease-out), border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
+  animation: rise 0.5s var(--ease-out) both;
 }
 .bot-item:hover {
   border-color: var(--accent);

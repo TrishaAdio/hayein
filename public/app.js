@@ -69,22 +69,31 @@ function flashOk(card) {
   card.classList.add('flash-ok');
 }
 
-// Animated view switch: fade current out, reveal next with entrance.
+// Animated view switch: cleanly fade the current card out, THEN reveal the
+// next one — no overlap, so there is no layout jump between steps.
 function show(card) {
-  [els.loginCard, els.botsCard, els.editorCard].forEach((c) => {
-    if (c !== card && !c.hidden) {
-      c.classList.add('leave');
-      setTimeout(() => {
-        c.hidden = true;
-        c.classList.remove('leave', 'enter');
-      }, 240);
-    }
-  });
-  setTimeout(() => {
+  const current = [els.loginCard, els.botsCard, els.editorCard].find(
+    (c) => c !== card && !c.hidden
+  );
+
+  const reveal = () => {
     card.hidden = false;
-    card.classList.remove('leave');
+    card.classList.remove('leave', 'enter');
+    void card.offsetWidth; // reflow so the entrance animation restarts
     card.classList.add('enter');
-  }, 60);
+    setTimeout(() => card.classList.remove('enter'), 620);
+  };
+
+  if (current) {
+    current.classList.add('leave');
+    setTimeout(() => {
+      current.hidden = true;
+      current.classList.remove('leave', 'enter');
+      reveal();
+    }, 200);
+  } else {
+    reveal();
+  }
 }
 
 async function api(path, payload) {
